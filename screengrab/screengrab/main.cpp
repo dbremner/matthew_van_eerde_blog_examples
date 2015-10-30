@@ -114,15 +114,14 @@ int _cdecl wmain(int argc, LPCWSTR argv[]) {
 
     // allocate the necessary memory
     DWORD bytesBmp = (bmp.bmWidth * bmih.biBitCount + 31) / 32 * 4 * bmp.bmHeight;
-    HANDLE hDIB = GlobalAlloc(GHND, bytesBmp);
+    HANDLE hDIB = GlobalAlloc(GPTR, bytesBmp);
     if (nullptr == hDIB) {
         ERR(L"Could not allocate %u bytes", bytesBmp);
         return -__LINE__;
     }
     OnExit oeFreeMemory([=](){ GlobalFree(hDIB); });
 
-    BYTE *pbBitmap = (BYTE*)GlobalLock(hDIB);
-    OnExit oeUnlock([=](){ GlobalUnlock(hDIB); });
+    BYTE *pbBitmap = (BYTE*)hDIB;
     
     // get the DIB data
     GetDIBits(
