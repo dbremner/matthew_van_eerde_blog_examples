@@ -26,7 +26,7 @@ HRESULT ListVolumesForDevices() {
     // get all devices
 
     EDataFlow flows[] = { eRender, eCapture };
-    for (UINT f = 0; f < ARRAYSIZE(flows); f++) {
+    for (UINT f = 0; f < _countof(flows); f++) {
         HRESULT hrTemp = ListVolumesForFlow(flows[f]);
         if (FAILED(hrTemp)) {
             hr = hrTemp;

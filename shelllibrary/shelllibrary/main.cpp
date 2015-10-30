@@ -7,6 +7,7 @@
 #include <knownfolders.h>
 #include <shobjidl.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define LOG(format, ...) wprintf(format L"\n", __VA_ARGS__)
 
@@ -30,7 +31,7 @@ void usage() {
         L"    <library> must be one of:"
     );
     
-    for (int i = 0; i < ARRAYSIZE(known); i++) {
+    for (int i = 0; i < _countof(known); i++) {
         LOG(L"        %s", known[i].name);
     }
 }
@@ -70,7 +71,7 @@ int _cdecl wmain(int argc, _In_reads_(argc) LPCWSTR argv[]) {
     GUID library = {0};
     bool found = false;
     LPCWSTR key = argv[4];
-    for (int i = 0; i < ARRAYSIZE(known); i++) {
+    for (int i = 0; i < _countof(known); i++) {
         if (0 == _wcsicmp(key, known[i].name)) {
             library = known[i].guid;
             found = true;

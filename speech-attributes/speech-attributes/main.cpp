@@ -2,6 +2,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #pragma warning ( push )
 #pragma warning ( disable : 4996 ) // sphelper.h uses deprecated GetVersionEx
@@ -66,7 +67,7 @@ int _cdecl wmain() {
         CATEGORY_ENTRY(SPCAT_RECOPROFILES)
     };
     
-    for (int i = 0; i < ARRAYSIZE(categories); i++) {
+    for (int i = 0; i < _countof(categories); i++) {
         LOG(L"-- %s --", categories[i].name);
         DumpCategory(categories[i].category);
         LOG(L"");

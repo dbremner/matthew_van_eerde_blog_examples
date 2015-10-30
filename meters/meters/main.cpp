@@ -7,6 +7,7 @@
 #include <cguid.h>
 #include <atlbase.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <mmdeviceapi.h>
 #include <audiopolicy.h>
 #include <endpointvolume.h>
@@ -73,7 +74,7 @@ int _cdecl wmain() {
     }
     
     EDataFlow flows[] = { eRender, eCapture };
-    for (UINT f = 0; f < ARRAYSIZE(flows); f++) {
+    for (UINT f = 0; f < _countof(flows); f++) {
         LOG(L"-- %s devices --", (flows[f] == eRender ? L"Playback" : L"Recording"));
     
         CComPtr<IMMDeviceCollection> pMMDeviceCollection;

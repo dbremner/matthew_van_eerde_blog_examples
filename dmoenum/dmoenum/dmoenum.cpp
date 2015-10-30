@@ -5,6 +5,7 @@
 #include <dmo.h>
 #include <dmoreg.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "log.h"
 #include "dmoenum.h"
@@ -30,7 +31,7 @@ HRESULT EnumerateDMOs() {
 
     HRESULT hrRet = S_OK;
     
-    for (int i = 0; i < ARRAYSIZE(categories); i++) {
+    for (int i = 0; i < _countof(categories); i++) {
         LPWSTR szGuid = NULL;
         HRESULT hr = StringFromIID(categories[i].guid, &szGuid);
         if (FAILED(hr)) {

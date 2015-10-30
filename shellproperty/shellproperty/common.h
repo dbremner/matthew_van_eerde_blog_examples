@@ -9,6 +9,7 @@
 #include <shobjidl.h>
 #include <shlwapi.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "parseanddisplay.h"
 #include "properties.h"

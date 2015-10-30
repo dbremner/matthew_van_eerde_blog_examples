@@ -5,6 +5,7 @@
 #include <mmdeviceapi.h>
 #include <atlstr.h>
 #include <mfidl.h>
+#include <stdlib.h>
 
 #include "log.h"
 #include "stringify.h"
@@ -117,7 +118,7 @@ HRESULT SetOTAPolicy(
         IMFOutputPolicy *rMFOutputPolicies[1] = { pMFOutputPolicy };
         hr = pMFOutputTrustAuthority->SetPolicy(
             rMFOutputPolicies,
-            ARRAYSIZE(rMFOutputPolicies),
+            _countof(rMFOutputPolicies),
             &pbTicket,
             &cbTicket
         );

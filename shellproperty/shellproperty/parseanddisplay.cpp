@@ -285,8 +285,8 @@ HRESULT DisplayPropertyValue(const PROPERTYKEY &key, const PROPVARIANT &value) {
 
             FileTimeToLocalFileTime( &ft, &ft );
             FileTimeToSystemTime( &ft, &st );
-            GetDateFormat( LOCALE_USER_DEFAULT, DATE_SHORTDATE, &st, NULL, szLocalDate, ARRAYSIZE(szLocalDate) );
-            GetTimeFormat( LOCALE_USER_DEFAULT, 0, &st, NULL, szLocalTime, ARRAYSIZE(szLocalDate) );
+            GetDateFormat( LOCALE_USER_DEFAULT, DATE_SHORTDATE, &st, NULL, szLocalDate, _countof(szLocalDate) );
+            GetTimeFormat( LOCALE_USER_DEFAULT, 0, &st, NULL, szLocalTime, _countof(szLocalDate) );
             LOG(
                 L"%s: VT_FILETIME 0x%08x%08x (%s %s local time)",
                 name, value.filetime.dwHighDateTime, value.filetime.dwLowDateTime,

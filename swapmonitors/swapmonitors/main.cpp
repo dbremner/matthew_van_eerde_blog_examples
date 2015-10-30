@@ -2,6 +2,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define LOG(format, ...) wprintf( format L"\n", __VA_ARGS__)
 #define ERR(format, ...) LOG( L"ERROR: " format, __VA_ARGS__)
@@ -72,7 +73,7 @@ int _cdecl wmain() {
         } else {
             posSecondary = mode.dmPosition;
             dxWidthSecondary = mode.dmPelsWidth;
-            wcscpy_s(nameSecondary, ARRAYSIZE(nameSecondary), device.DeviceName);
+            wcscpy_s(nameSecondary, _countof(nameSecondary), device.DeviceName);
         }
     }
     

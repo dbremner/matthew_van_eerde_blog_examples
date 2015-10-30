@@ -4,6 +4,7 @@
 #include <mmdeviceapi.h>
 #include <audioclient.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <avrt.h>
 
 #include "silence.h"
@@ -164,7 +165,7 @@ DWORD WINAPI PlaySilenceThreadFunction(LPVOID pContext) {
     bool bDone = false;
     for (UINT32 nPasses = 0; !bDone; nPasses++) {
         dwWaitResult = WaitForMultipleObjects(
-            ARRAYSIZE(waitArray), waitArray,
+            _countof(waitArray), waitArray,
             FALSE, INFINITE
         );
 

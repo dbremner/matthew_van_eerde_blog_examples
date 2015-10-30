@@ -2,6 +2,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <sapi.h>
 
@@ -196,7 +197,7 @@ int _cdecl wmain(int argc, LPCWSTR argv[]) {
     bool done = false;
     while (!done) {
         DWORD dwResult = WaitForMultipleObjectsEx(
-            ARRAYSIZE(handles), handles,
+            _countof(handles), handles,
             FALSE, // any handle will wake us up
             INFINITE,
             FALSE // not alertable
@@ -206,7 +207,7 @@ int _cdecl wmain(int argc, LPCWSTR argv[]) {
                 // see if any of them was an Enter key-up event
                 INPUT_RECORD rInput[128] = {};
                 DWORD nEvents = 0;
-                if (!ReadConsoleInput(handles[0], rInput, ARRAYSIZE(rInput), &nEvents)) {
+                if (!ReadConsoleInput(handles[0], rInput, _countof(rInput), &nEvents)) {
                     ERR(L"ReadConsoleInput failed: error %u\n", GetLastError());
                     return -__LINE__;
                 }

@@ -263,7 +263,7 @@ HRESULT LoopbackCapture(
         }
 
         dwWaitResult = WaitForMultipleObjects(
-            ARRAYSIZE(waitArray), waitArray,
+            _countof(waitArray), waitArray,
             FALSE, INFINITE
         );
 

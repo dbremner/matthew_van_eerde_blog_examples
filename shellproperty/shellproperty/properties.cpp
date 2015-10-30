@@ -764,4 +764,4 @@ Key known[] = {
     KEY_ENTRY(PKEY_ZoneIdentifier),
 };
 
-size_t known_count = ARRAYSIZE(known);
+size_t known_count = _countof(known);

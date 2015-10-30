@@ -72,7 +72,7 @@ int do_everything(int argc, LPCWSTR argv[]) {
     HANDLE waitArray[2] = { hStartedEvent, hThread };
     DWORD dwWaitResult;
     dwWaitResult = WaitForMultipleObjects(
-        ARRAYSIZE(waitArray), waitArray,
+        _countof(waitArray), waitArray,
         FALSE, INFINITE
     );
 
@@ -118,7 +118,7 @@ int do_everything(int argc, LPCWSTR argv[]) {
                 // see if any of them was an Enter key-up event
                 INPUT_RECORD rInput[128];
                 DWORD nEvents;
-                if (!ReadConsoleInput(hStdIn, rInput, ARRAYSIZE(rInput), &nEvents)) {
+                if (!ReadConsoleInput(hStdIn, rInput, _countof(rInput), &nEvents)) {
                     ERR(L"ReadConsoleInput failed: last error is %u", GetLastError());
                     bKeepWaiting = false;
                 }

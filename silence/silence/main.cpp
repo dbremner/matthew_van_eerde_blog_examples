@@ -2,6 +2,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <mmdeviceapi.h>
 
 #include "prefs.h"
@@ -76,7 +77,7 @@ int do_everything(int argc, LPCWSTR argv[]) {
     HANDLE waitArray[2] = { hStartedEvent, hThread };
     DWORD dwWaitResult;
     dwWaitResult = WaitForMultipleObjects(
-        ARRAYSIZE(waitArray), waitArray,
+        _countof(waitArray), waitArray,
         FALSE, INFINITE
     );
 
@@ -132,7 +133,7 @@ int do_everything(int argc, LPCWSTR argv[]) {
                 // see if any of them was an Enter key-up event
                 INPUT_RECORD rInput[128];
                 DWORD nEvents;
-                if (!ReadConsoleInput(hStdIn, rInput, ARRAYSIZE(rInput), &nEvents)) {
+                if (!ReadConsoleInput(hStdIn, rInput, _countof(rInput), &nEvents)) {
                     printf("ReadConsoleInput failed: last error is %u\n", GetLastError());
                     SetEvent(hStopEvent);
                     WaitForSingleObject(hThread, INFINITE);

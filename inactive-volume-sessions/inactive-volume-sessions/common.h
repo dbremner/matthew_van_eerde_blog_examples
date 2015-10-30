@@ -5,6 +5,7 @@
 #include <cguid.h>
 #include <atlbase.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <mmdeviceapi.h>
 #include <audiopolicy.h>
 #include <endpointvolume.h>

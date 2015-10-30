@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <objbase.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <dshow.h>
 #include <ks.h>
 #include <ksmedia.h>
@@ -85,7 +86,7 @@ HRESULT EnumerateDirectShowFilters() {
     
     ReleaseOnExit releaseCreateDevEnum(pCreateDevEnum);
     
-    for (int i = 0; i < ARRAYSIZE(categories); i++) {
+    for (int i = 0; i < _countof(categories); i++) {
         LPWSTR szGuid = NULL;
         HRESULT hr = StringFromIID(categories[i].guid, &szGuid);
         if (FAILED(hr)) {

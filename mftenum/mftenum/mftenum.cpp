@@ -2,6 +2,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <mfapi.h>
 #include <mftransform.h>
 #include <mferror.h>
@@ -40,7 +41,7 @@ HRESULT EnumerateMFTs() {
 
     HRESULT hrRet = S_OK;
     
-    for (int i = 0; i < ARRAYSIZE(categories); i++) {
+    for (int i = 0; i < _countof(categories); i++) {
         LPWSTR szGuid = NULL;
         HRESULT hr = StringFromIID(categories[i].guid, &szGuid);
         if (FAILED(hr)) {

@@ -5,6 +5,7 @@
 #include <atlstr.h>
 #include <mfidl.h>
 #include <mfapi.h>
+#include <stdlib.h>
 
 #include "log.h"
 #include "stringify.h"
@@ -339,7 +340,7 @@ HRESULT STDMETHODCALLTYPE
     bool bTrustedAudioDriversSupported = false;
 
     TCHAR szGuid[39];
-    StringFromGUID2(guidOutputSubType, szGuid, ARRAYSIZE(szGuid));
+    StringFromGUID2(guidOutputSubType, szGuid, _countof(szGuid));
     LOG(
         _T("GenerateRequiredSchemas() called\n")
         _T("dwAttributes: %s (0x%08x)\n")
@@ -352,7 +353,7 @@ HRESULT STDMETHODCALLTYPE
 
     // log all the supported protection schemas
     for (DWORD i = 0; i < cProtectionSchemasSupported; i++) {
-        StringFromGUID2(rgGuidProtectionSchemasSupported[i], szGuid, ARRAYSIZE(szGuid));
+        StringFromGUID2(rgGuidProtectionSchemasSupported[i], szGuid, _countof(szGuid));
         LOG(
             _T("%s (%s)"),
             ProtectionSchema2String(rgGuidProtectionSchemasSupported[i]),

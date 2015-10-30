@@ -96,7 +96,7 @@ line *ReadLines() {
             goto Error;
         }
 
-        if (fgetws(currentChunk->text, ARRAYSIZE(currentChunk->text), stdin)) {
+        if (fgetws(currentChunk->text, _countof(currentChunk->text), stdin)) {
             // is this the end of a line?
             size_t len = wcslen(currentChunk->text);
             currentLen += len;
