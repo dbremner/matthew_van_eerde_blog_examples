@@ -5,6 +5,7 @@
 #include <audioclient.h>
 #include <endpointvolume.h>
 #include <stdio.h>
+#include <wrl/wrappers/corewrappers.h>
 #include "cleanup.h"
 #include "log.h"
 #include "vary.h"
@@ -58,13 +59,12 @@ HRESULT Capture() {
     CoTaskMemFreeOnExit freeMixFormat(pWfx);
 
     // need to call initialize to get a stream volume
-    HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+	Microsoft::WRL::Wrappers::Event hEvent{ CreateEvent(NULL, FALSE, FALSE, NULL) };
     if (NULL == hEvent) {
         DWORD dwErr = GetLastError();
         ERR(L"CreateEvent failed with error %d", dwErr);
         return HRESULT_FROM_WIN32(dwErr);
     }
-    CloseHandleOnExit closeEvent(hEvent);
     
     // timer-driven shared-mode capture
     hr = pAudioClient->Initialize(

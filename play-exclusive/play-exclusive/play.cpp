@@ -6,6 +6,7 @@
 #include <mmdeviceapi.h>
 #include <audioclient.h>
 #include <avrt.h>
+#include <wrl/wrappers/corewrappers.h>
 
 #include "play.h"
 
@@ -202,7 +203,7 @@ HRESULT Play(
     printf("We ended up with a period of %I64u hns or %u frames.\n", hnsPeriod, nFramesInBuffer);
 
     // make an event
-    HANDLE hNeedDataEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+	Microsoft::WRL::Wrappers::Event hNeedDataEvent{ CreateEvent(NULL, FALSE, FALSE, NULL) };
     if (NULL == hNeedDataEvent) {
         DWORD dwErr = GetLastError();
         printf("CreateEvent failed: GetLastError = %u\n", dwErr);
@@ -211,10 +212,9 @@ HRESULT Play(
     }
 
     // set it as the event handle
-    hr = pAudioClient->SetEventHandle(hNeedDataEvent);
+    hr = pAudioClient->SetEventHandle(hNeedDataEvent.Get());
     if (FAILED(hr)) {
         printf("IAudioClient::SetEventHandle failed: hr = 0x%08x\n", hr);
-        CloseHandle(hNeedDataEvent);
         pAudioClient->Release();
         return hr;
     }
@@ -227,7 +227,6 @@ HRESULT Play(
     );
     if (FAILED(hr)) {
         printf("IAudioClient::GetService(IAudioRenderClient) failed: hr 0x%08x\n", hr);
-        CloseHandle(hNeedDataEvent);
         pAudioClient->Release();
         return hr;
     }
@@ -238,7 +237,6 @@ HRESULT Play(
     if (FAILED(hr)) {
         printf("IAudioRenderClient::GetBuffer failed trying to pre-roll silence: hr = 0x%08x\n", hr);
         pAudioRenderClient->Release();        
-        CloseHandle(hNeedDataEvent);
         pAudioClient->Release();
         return hr;
     }
@@ -247,7 +245,6 @@ HRESULT Play(
     if (FAILED(hr)) {
         printf("IAudioRenderClient::ReleaseBuffer failed trying to pre-roll silence: hr = 0x%08x\n", hr);
         pAudioRenderClient->Release();        
-        CloseHandle(hNeedDataEvent);
         pAudioClient->Release();
         return hr;
     }
@@ -259,7 +256,6 @@ HRESULT Play(
         DWORD dwErr = GetLastError();
         printf("AvSetMmThreadCharacteristics failed: last error = %u\n", dwErr);
         pAudioRenderClient->Release();        
-        CloseHandle(hNeedDataEvent);
         pAudioClient->Release();
         return HRESULT_FROM_WIN32(dwErr);
     }
@@ -270,7 +266,6 @@ HRESULT Play(
         printf("IAudioClient::Start failed: hr = 0x%08x", hr);
         AvRevertMmThreadCharacteristics(hTask);
         pAudioRenderClient->Release();
-        CloseHandle(hNeedDataEvent);
         pAudioClient->Release();
     }
 
@@ -282,7 +277,7 @@ HRESULT Play(
         nFramesPlayed += nFramesThisPass
     ) {
         // in a production app there would be a timeout here
-        WaitForSingleObject(hNeedDataEvent, INFINITE);
+        WaitForSingleObject(hNeedDataEvent.Get(), INFINITE);
 
         // need data
         hr = pAudioRenderClient->GetBuffer(nFramesInBuffer, &pData);
@@ -291,7 +286,6 @@ HRESULT Play(
             pAudioClient->Stop();
             AvRevertMmThreadCharacteristics(hTask);
             pAudioRenderClient->Release();        
-            CloseHandle(hNeedDataEvent);
             pAudioClient->Release();
             return hr;
         }
@@ -309,7 +303,6 @@ HRESULT Play(
             pAudioClient->Stop();
             AvRevertMmThreadCharacteristics(hTask);
             pAudioRenderClient->Release();        
-            CloseHandle(hNeedDataEvent);
             pAudioClient->Release();
             return E_UNEXPECTED;            
         } else if (-1 == nBytesGotten) {
@@ -317,7 +310,6 @@ HRESULT Play(
             pAudioClient->Stop();
             AvRevertMmThreadCharacteristics(hTask);
             pAudioRenderClient->Release();        
-            CloseHandle(hNeedDataEvent);
             pAudioClient->Release();
             return E_UNEXPECTED;            
         } else if (nBytesGotten != (LONG)nBytesThisPass) {
@@ -325,7 +317,6 @@ HRESULT Play(
             pAudioClient->Stop();
             AvRevertMmThreadCharacteristics(hTask);
             pAudioRenderClient->Release();        
-            CloseHandle(hNeedDataEvent);
             pAudioClient->Release();
             return E_UNEXPECTED;
         }
@@ -344,21 +335,19 @@ HRESULT Play(
             pAudioClient->Stop();
             AvRevertMmThreadCharacteristics(hTask);
             pAudioRenderClient->Release();        
-            CloseHandle(hNeedDataEvent);
             pAudioClient->Release();
             return hr;
         }
     } // render loop
 
     // add a buffer of silence for good measure
-    WaitForSingleObject(hNeedDataEvent, INFINITE);
+    WaitForSingleObject(hNeedDataEvent.Get(), INFINITE);
     hr = pAudioRenderClient->GetBuffer(nFramesInBuffer, &pData);
     if (FAILED(hr)) {
         printf("IAudioRenderClient::GetBuffer failed trying to post-roll silence: hr = 0x%08x\n", hr);
         pAudioClient->Stop();
         AvRevertMmThreadCharacteristics(hTask);
         pAudioRenderClient->Release();        
-        CloseHandle(hNeedDataEvent);
         pAudioClient->Release();
         return hr;
     }
@@ -369,7 +358,6 @@ HRESULT Play(
         pAudioClient->Stop();
         AvRevertMmThreadCharacteristics(hTask);
         pAudioRenderClient->Release();        
-        CloseHandle(hNeedDataEvent);
         pAudioClient->Release();
         return hr;
     }
@@ -379,7 +367,6 @@ HRESULT Play(
     pAudioClient->Stop();
     AvRevertMmThreadCharacteristics(hTask);
     pAudioRenderClient->Release();
-    CloseHandle(hNeedDataEvent);
     pAudioClient->Release();
     
     return S_OK;

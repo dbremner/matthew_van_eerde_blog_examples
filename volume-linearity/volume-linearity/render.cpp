@@ -6,6 +6,7 @@
 #include <endpointvolume.h>
 #include <mmdeviceapi.h>
 #include <audioclient.h>
+#include <wrl/wrappers/corewrappers.h>
 #include "log.h"
 #include "cleanup.h"
 #include "vary.h"
@@ -81,13 +82,12 @@ HRESULT Render(IAudioMeterInformation *pAudioMeterInformation, EVary which) {
     }
     
     // at this point I should really check that it's 32-bit floating-point
-    HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+	Microsoft::WRL::Wrappers::Event hEvent{ CreateEvent(NULL, FALSE, FALSE, NULL) };
     if (NULL == hEvent) {
         DWORD dwErr = GetLastError();
         ERR(L"CreateEvent failed with error %d", dwErr);
         return HRESULT_FROM_WIN32(dwErr);
     }
-    CloseHandleOnExit closeEvent(hEvent);
     
     // event-driven shared-mode render
     hr = pAudioClient->Initialize(
@@ -103,7 +103,7 @@ HRESULT Render(IAudioMeterInformation *pAudioMeterInformation, EVary which) {
         return hr;
     }
     
-    hr = pAudioClient->SetEventHandle(hEvent);
+    hr = pAudioClient->SetEventHandle(hEvent.Get());
     if (FAILED(hr)) {
         ERR(L"IAudioClient::SetEventHandle failed: hr = 0x%08x", hr);
         return hr;
@@ -272,7 +272,7 @@ HRESULT Render(IAudioMeterInformation *pAudioMeterInformation, EVary which) {
     
     for (UINT32 nFramesWritten = 0; nFramesWritten < nTotalFrames; /* below */) {
             
-        DWORD dwWaitResult = WaitForSingleObject(hEvent, INFINITE);
+        DWORD dwWaitResult = WaitForSingleObject(hEvent.Get(), INFINITE);
         if (WAIT_OBJECT_0 != dwWaitResult) {
             DWORD dwErr = GetLastError();
             ERR(L"WaitForSingleObject returned %u (expected WAIT_OBJECT_0) with error %u", dwWaitResult, dwErr);
