@@ -25,7 +25,7 @@ HRESULT LogProperty(PROPERTYKEY key, const PROPVARIANT &val) {
     
     HRESULT hr = StringCchPrintf(
         rKey,
-        ARRAYSIZE(rKey),
+        _countof(rKey),
         L"{%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x},%u",
         key.fmtid.Data1,
             key.fmtid.Data2,
