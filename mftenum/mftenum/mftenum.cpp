@@ -7,6 +7,7 @@
 #include <mftransform.h>
 #include <mferror.h>
 #include <ks.h>
+#include <atlbase.h>
 
 #include "cleanup.h"
 #include "log.h"
@@ -130,16 +131,15 @@ HRESULT DisplayMFT(IMFActivate *pMFActivate) {
         return hr;
     }
 
-    LPWSTR szGuid = NULL;
+    CComHeapPtr<WCHAR> szGuid;
     hr = StringFromIID(guidMFT, &szGuid);
     if (FAILED(hr)) {
         ERR(L"StringFromIID failed: hr = 0x%08x", hr);
         return hr;
     }
-    CoTaskMemFreeOnExit freeGuid(szGuid);
     
     // get the friendly name string from the IMFAttributes of the activation object
-    LPWSTR szFriendlyName = NULL;
+	CComHeapPtr<WCHAR> szFriendlyName;
 #pragma prefast(suppress: __WARNING_PASSING_FUNCTION_UNEXPECTED_NULL, "IMFAttributes::GetAllocatedString third argument is optional");
     hr = pMFActivate->GetAllocatedString(
         MFT_FRIENDLY_NAME_Attribute,
@@ -154,7 +154,6 @@ HRESULT DisplayMFT(IMFActivate *pMFActivate) {
         ERR(L"IMFAttributes::GetAllocatedString(MFT_FRIENDLY_NAME_Attribute) failed: hr = 0x%08x", hr);
         return hr;
     }
-    CoTaskMemFreeOnExit freeFriendlyName(szFriendlyName);
     
     LOG(L"%s (%s)", szFriendlyName, szGuid);
     

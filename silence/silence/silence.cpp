@@ -37,7 +37,7 @@ DWORD WINAPI PlaySilenceThreadFunction(LPVOID pContext) {
     }
 
     // get the mix format
-    WAVEFORMATEX *pwfx;
+    CComHeapPtr<WAVEFORMATEX> pwfx;
     hr = pAudioClient->GetMixFormat(&pwfx);
     if (FAILED(hr)) {
         printf("IAudioClient::GetMixFormat failed: hr = 0x%08x\n", hr);
@@ -52,7 +52,6 @@ DWORD WINAPI PlaySilenceThreadFunction(LPVOID pContext) {
         AUDCLNT_STREAMFLAGS_EVENTCALLBACK,
         0, 0, pwfx, NULL
     );
-    CoTaskMemFree(pwfx);
     if (FAILED(hr)) {
         printf("IAudioClient::Initialize failed: hr 0x%08x\n", hr);
         pAudioClient->Release();
