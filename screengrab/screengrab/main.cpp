@@ -5,6 +5,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <atlgdi.h>
 
 #include <functional>
 
@@ -31,12 +32,11 @@ int _cdecl wmain(int argc, LPCWSTR argv[]) {
     
     // grab a device context for the screen
     // we will read from this
-    HDC hdcScreen = GetDC(nullptr);
+	CClientDC hdcScreen{nullptr};
     if (nullptr == hdcScreen) {
         ERR(L"GetDC failed: error %u", GetLastError());
         return -__LINE__;
     }
-    OnExit oeReleaseDc([=](){ ReleaseDC(nullptr, hdcScreen); });
     
     // create an in-memory device context
     // we will write to this
