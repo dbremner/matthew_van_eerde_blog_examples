@@ -5,6 +5,8 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <atlbase.h>
+#include <atlapp.h>
 #include <atlgdi.h>
 
 #include <functional>
